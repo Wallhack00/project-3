@@ -52,8 +52,10 @@
       },
       {
         "domain_suffix": [
-          "support.udemy.com",
-          "support.udemy.com"
+          "promo.skillacademy.com",
+          "promo.skillacademy.com",
+          "promo.skillacademy.com",
+          "promo.skillacademy.com"
         ],
         "server": "direct-dns",
         "rewrite_ttl": 20
@@ -117,24 +119,28 @@
       "tag": "Internet",
       "outbounds": [
         "Best Latency",
-        "millow_ws",
-        "milloww_ws"
+        "millow",
+        "milloww",
+        "Alibaba",
+        "Incapsula"
       ]
     },
     {
       "type": "urltest",
       "tag": "Best Latency",
       "outbounds": [
-        "millow_ws",
-        "milloww_ws"
+        "millow",
+        "milloww",
+        "Alibaba",
+        "Incapsula"
       ],
       "url": "https://detectportal.firefox.com/success.txt",
       "interval": "1m0s"
     },
     {
-      "tag": "millow_ws",
+      "tag": "millow",
       "type": "vmess",
-      "server": "support.udemy.com",
+      "server": "promo.skillacademy.com",
       "server_port": 443,
       "uuid": "d3006f2e-69fc-4e5e-8c86-e3b0ef166296",
       "security": "auto",
@@ -164,9 +170,9 @@
       "domain_strategy": "ipv4_only"
     },
     {
-      "tag": "milloww_ws",
+      "tag": "milloww",
       "type": "vmess",
-      "server": "support.udemy.com",
+      "server": "promo.skillacademy.com",
       "server_port": 443,
       "uuid": "a8c9715d-5da2-4e85-8ba2-a0eed29f6305",
       "security": "auto",
@@ -189,6 +195,66 @@
         "path": "/vmess-ws",
         "headers": {
           "Host": "vmess-uas-id01.globalssh.xyz"
+        },
+        "max_early_data": 0,
+        "early_data_header_name": "Sec-WebSocket-Protocol"
+      },
+      "domain_strategy": "ipv4_only"
+    },
+    {
+      "tag": "Alibaba",
+      "type": "vless",
+      "server": "promo.skillacademy.com",
+      "server_port": 443,
+      "uuid": "9132908c-57bf-4858-8845-e9aa385b6e16",
+      "flow": "",
+      "packet_encoding": "xudp",
+      "multiplex": {
+        "enabled": false,
+        "protocol": "smux",
+        "max_streams": 32
+      },
+      "tls": {
+        "enabled": true,
+        "server_name": "cx40.ntr.biz.id",
+        "insecure": true,
+        "disable_sni": false
+      },
+      "transport": {
+        "type": "ws",
+        "path": "%2F%3Fed%3D2048",
+        "headers": {
+          "Host": "cx40.ntr.biz.id"
+        },
+        "max_early_data": 0,
+        "early_data_header_name": "Sec-WebSocket-Protocol"
+      },
+      "domain_strategy": "ipv4_only"
+    },
+    {
+      "tag": "Incapsula",
+      "type": "vless",
+      "server": "promo.skillacademy.com",
+      "server_port": 443,
+      "uuid": "9132908c-57bf-4858-8845-e9aa385b6e16",
+      "flow": "",
+      "packet_encoding": "xudp",
+      "multiplex": {
+        "enabled": false,
+        "protocol": "smux",
+        "max_streams": 32
+      },
+      "tls": {
+        "enabled": true,
+        "server_name": "cx4.ntr.biz.id",
+        "insecure": true,
+        "disable_sni": false
+      },
+      "transport": {
+        "type": "ws",
+        "path": "%2F%3Fed%3D2048",
+        "headers": {
+          "Host": "cx4.ntr.biz.id"
         },
         "max_early_data": 0,
         "early_data_header_name": "Sec-WebSocket-Protocol"
