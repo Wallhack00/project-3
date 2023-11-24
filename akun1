@@ -1,116 +1,74 @@
 {
   "log": {
-    "disabled": false,
-    "level": "warn",
-    "timestamp": true
-  },
-  "experimental": {
-    "clash_api": {
-      "external_controller": "0.0.0.0:9090",
-      "external_ui": "yacd",
-      "external_ui_download_url": "https://github.com/MetaCubeX/Yacd-meta/archive/gh-pages.zip",
-      "external_ui_download_detour": "Internet",
-      "secret": "",
-      "default_mode": "rule",
-      "store_selected": true,
-      "cache_file": "clash.db"
-    }
+    "level": "info"
   },
   "dns": {
     "servers": [
       {
-        "tag": "Internet-dns",
-        "address": "1.0.0.1",
+        "tag": "dns-remote",
+        "address": "https://dns.google/dns-query",
+        "address_resolver": "dns-direct",
+        "strategy": "ipv4_only"
+      },
+      {
+        "tag": "dns-direct",
+        "address": "local",
+        "address_resolver": "dns-local",
         "strategy": "ipv4_only",
-        "detour": "Internet"
+        "detour": "direct"
+      },
+      {
+        "tag": "dns-local",
+        "address": "local",
+        "detour": "direct"
+      },
+      {
+        "tag": "dns-block",
+        "address": "rcode://success"
       },
       {
         "tag": "Best Latency-dns",
         "address": "1.1.1.1",
         "strategy": "ipv4_only",
         "detour": "Best Latency"
-      },
-      {
-        "tag": "direct-dns",
-        "address": "local",
-        "strategy": "ipv4_only",
-        "detour": "direct"
-      },
-      {
-        "tag": "block-dns",
-        "address": "rcode://success"
       }
     ],
     "rules": [
       {
-        "domain_suffix": [
-          ".arpa.",
-          ".arpa"
+        "domain": [
+          "promo.skillacademy.com",
+          "dns.google"
         ],
-        "server": "block-dns",
-        "rewrite_ttl": 20
-      },
-      {
-        "domain_suffix": [
-          "promo.skillacademy.com",
-          "promo.skillacademy.com",
-          "promo.skillacademy.com",
-          "promo.skillacademy.com"
-        ],
-        "server": "direct-dns",
-        "rewrite_ttl": 20
-      },
-      {
-        "network": "udp",
-        "port": 443,
-        "server": "block-dns",
-        "rewrite_ttl": 20
-      },
-      {
-        "outbound": "Internet",
-        "server": "Internet-dns",
-        "rewrite_ttl": 20
-      },
-      {
-        "outbound": "Best Latency",
-        "server": "Best Latency-dns",
-        "rewrite_ttl": 20
-      },
-      {
-        "outbound": "direct",
-        "server": "direct-dns",
-        "rewrite_ttl": 20
-      },
-      {
-        "outbound": "any",
-        "server": "direct-dns",
-        "rewrite_ttl": 20
+        "server": "dns-direct"
       }
     ],
-    "reverse_mapping": true,
-    "strategy": "ipv4_only",
-    "independent_cache": true,
-    "disable_cache": true
+    "independent_cache": true
   },
   "inbounds": [
     {
+      "type": "direct",
+      "tag": "dns-in",
+      "listen": "127.0.0.1",
+      "listen_port": 6450,
+      "override_address": "8.8.8.8",
+      "override_port": 53
+    },
+    {
       "type": "tun",
       "tag": "tun-in",
-      "interface_name": "tun0",
-      "inet4_address": "172.19.0.1/30",
       "mtu": 9000,
+      "inet4_address": "172.19.0.1/28",
       "auto_route": true,
-      "strict_route": true,
-      "stack": "system",
       "endpoint_independent_nat": true,
+      "stack": "mixed",
       "sniff": true
     },
     {
-      "listen": "0.0.0.0",
-      "listen_port": 2080,
-      "sniff": true,
+      "type": "mixed",
       "tag": "mixed-in",
-      "type": "mixed"
+      "listen": "127.0.0.1",
+      "listen_port": 2080,
+      "sniff": true
     }
   ],
   "outbounds": [
@@ -288,11 +246,33 @@
     },
     "rules": [
       {
-        "outbound": "dns-out",
-        "port": [
-          53
-        ]
+        "port": 53,
+        "outbound": "dns-out"
+      },
+      {
+        "inbound": "dns-in",
+        "outbound": "dns-out"
+      },
+      {
+        "source_ip_cidr": [
+          "224.0.0.0/3",
+          "ff00::/8"
+        ],
+        "ip_cidr": [
+          "224.0.0.0/3",
+          "ff00::/8"
+        ],
+        "outbound": "block"
       }
-    ]
+    ],
+    "auto_detect_interface": true
+  },
+  "experimental": {
+    "clash_api": {
+      "external_controller": "127.0.0.1:9090",
+      "external_ui": "../files/yacd",
+      "cache_file": "../cache/clash.db"
+    }
   }
+}
 }
